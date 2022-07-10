@@ -1,18 +1,25 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 async function main() {
-  const alice = await prisma.children.create({
-    data: {
+  const alice = await prisma.children.upsert({
+    where: {
+      id: 3,
+    },
+    update: {},
+    create: {
       age: 0,
       name: 'Alice',
-      accessHashes: [],
     },
   });
 
-  const hash = await prisma.hash.create({
-    data: {
-      hash: '123123',
-      AccessHashTable: { create: [{ childrenId: 1 }] },
+  const hash = await prisma.hash.upsert({
+    where: {
+      hash: 'pseudorandom',
+    },
+    update: {},
+    create: {
+      hash: 'pseudorandom',
+      AccessHashTable: { create: [{ childrenId: 3 }] },
     },
   });
 }

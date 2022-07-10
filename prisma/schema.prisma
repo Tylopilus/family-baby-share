@@ -29,7 +29,6 @@ model Children {
   id              Int               @id @default(autoincrement())
   name            String
   age             Int
-  accessHashes    String[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @default(now())
   AccessHashTable AccessHashTable[]
