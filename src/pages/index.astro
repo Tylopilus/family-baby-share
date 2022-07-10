@@ -1,18 +1,23 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { getChildren } from "../utils/db";
+import { getChildren, isLoggedIn } from "../utils/db";
 const cookie = Astro.request.headers.get('cookie');
 const familyShareAccess = cookie?.split('; ').find(item => item.startsWith('familyShareAccess='))?.split('=')[1];
-const children = await getChildren(familyShareAccess);
+const loggedIn = await isLoggedIn(familyShareAccess);
+let children;
+if (loggedIn) {
+	children = await getChildren(familyShareAccess);
+}
+
 
 ---
 
 <Layout title="Welcome to your favorite place to view your pictures">
-	{!familyShareAccess && <div class="">
+	{!loggedIn && <div class="">
 		<p>Looks like you don't have access yet.</p>
 		<div>Want to share? Sign up</div>
 	</div>}
-	{familyShareAccess && (
+	{loggedIn && (
 	<div class="">
 		<header class='text-center'>
 			<h1>Welcome to your favorite place to view pictures of your beloved ones</h1>
