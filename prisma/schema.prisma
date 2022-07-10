@@ -17,13 +17,12 @@ model Hash {
 }
 
 model AccessHashTable {
-  id         Int      @id @default(autoincrement())
   children   Children @relation(fields: [childrenId], references: [id])
   childrenId Int
   hashes     Hash     @relation(fields: [hash], references: [hash])
   hash       String
 
-  @@index([childrenId])
+  @@id([childrenId, hash])
 }
 
 model Children {
