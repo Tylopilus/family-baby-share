@@ -1,0 +1,17 @@
+---
+import accessData from '../access';
+import img from '../assets/hai.jpeg';
+const cookie = Astro.request.headers.get('cookie');
+const familyShareAccess = cookie.split('; ').find(item => item.startsWith('familyShareAccess=')).split('=')[1];
+const param = Astro.request.url;
+
+if (!accessData.asd.includes(familyShareAccess)) {
+	return Astro.redirect('/');
+}
+
+---
+
+<html>
+<img src={img} alt="">
+
+</html>
