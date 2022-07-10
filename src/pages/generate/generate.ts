@@ -1,9 +1,10 @@
-import { randomBytes } from 'crypto';
+import * as crypto from 'crypto';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 export async function get({ params }) {
   const { id } = params;
-  const hash = crypto.getRandomValues(randomBytes(20)).toString('hex');
+  const hash = crypto.randomBytes(20).toString('hex');
+  // const hash = crypto.getRandomValues(randomBytes(20)).toString('hex');
   const res = await prisma.hash.create({
     data: {
       hash,
