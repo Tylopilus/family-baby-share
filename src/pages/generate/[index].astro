@@ -1,8 +1,12 @@
 ---
-const param = Astro.params.index;
+import { getHash } from "../../utils/db";
+
+
+const param = Astro.params.index.toString();
+const hash = await getHash(param);
 Astro.response.headers.set('Set-Cookie', `familyShareAccess=${param}; path=/; max-age=${60 * 60 * 24 * 365};`);
 Astro.response.status = 301;
 Astro.response.headers.set('Location', '/');
 ---
 
-<div>{param}</div>
+<div>{hash}</div>

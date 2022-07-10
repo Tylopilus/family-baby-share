@@ -1,7 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { getChildren } from "../utils/db";
 const cookie = Astro.request.headers.get('cookie');
 const familyShareAccess = cookie?.split('; ').find(item => item.startsWith('familyShareAccess='))?.split('=')[1];
+const children = await getChildren(familyShareAccess);
+
 ---
 
 <Layout title="Welcome to your favorite place to view your pictures">
@@ -19,7 +22,11 @@ const familyShareAccess = cookie?.split('; ').find(item => item.startsWith('fami
 		</header>
 		<main>
 			<ul>
-				<li><a href='./baby1' class="text-blue-500 underline">baby1</a></li>
+				{children.map(child => (
+				<li>
+					<a href={`${child.hash}`}>{child.name}</a>
+				</li>
+				))}
 			</ul>
 		</main>
 	</div>

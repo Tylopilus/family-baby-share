@@ -1,0 +1,6 @@
+{
+  "files.exclude": {
+    "supabase": true,
+    "node_modules": true
+  }
+}

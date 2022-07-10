@@ -1,13 +1,15 @@
 ---
-import accessData from '../access';
 import img from '../assets/hai.jpeg';
+import { getChildren, isLoggedIn } from '../utils/db';
 const cookie = Astro.request.headers.get('cookie');
 const familyShareAccess = cookie.split('; ').find(item => item.startsWith('familyShareAccess=')).split('=')[1];
 const param = Astro.request.url;
 
-if (!accessData.asd.includes(familyShareAccess)) {
+const login = isLoggedIn(familyShareAccess);
+if (!login) {
 	return Astro.redirect('/');
 }
+
 
 ---
 

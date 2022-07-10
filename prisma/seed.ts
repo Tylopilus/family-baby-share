@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 async function main() {
   const alice = await prisma.children.upsert({
     where: {
-      id: 3,
+      id: 1,
     },
     update: {},
     create: {
@@ -19,7 +19,7 @@ async function main() {
     update: {},
     create: {
       hash: 'pseudorandom',
-      AccessHashTable: { create: [{ childrenId: 3 }] },
+      AccessHashTable: { create: [{ childrenId: 1 }] },
     },
   });
 }
