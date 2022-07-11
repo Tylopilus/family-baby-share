@@ -20,6 +20,7 @@ export async function getInviteHash(hash: string): Promise<string | null> {
       hash,
     },
   });
+  console.log({ result });
   if (result) {
     return result.hash;
   }
