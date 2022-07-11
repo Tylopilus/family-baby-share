@@ -1,18 +1,20 @@
-import * as crypto from 'crypto';
 import { PrismaClient } from '@prisma/client';
+import { getInviteHash } from '../../utils/db';
+import { generateHash } from '../../utils/utils';
 const prisma = new PrismaClient();
-export async function get({ params }) {
-  const { id } = params;
-  const hash = crypto.randomBytes(20).toString('hex');
+export async function get() {
   // const hash = crypto.getRandomValues(randomBytes(20)).toString('hex');
-  const res = await prisma.hash.create({
-    data: {
-      hash,
-      AccessHashTable: { create: [{ childrenId: 1 }] }, // TODO: get childrenId from current user
-    },
-  });
-
-  return new Response(JSON.stringify({ link: hash }), {
-    status: 200,
-  });
+  while (true) {
+    const hash = generateHash();
+    if (!(await getInviteHash(hash))) {
+      const result = await prisma.inviteHash.create({
+        data: {
+          hash,
+        },
+      });
+      return new Response(JSON.stringify({ link: result.hash }), {
+        status: 200,
+      });
+    }
+  }
 }

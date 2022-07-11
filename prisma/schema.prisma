@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Hash {
-  hash            String            @id
+  hash            String            @id @unique
   createdAt       DateTime          @default(now())
   AccessHashTable AccessHashTable[]
 }
@@ -32,4 +32,10 @@ model Children {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @default(now())
   AccessHashTable AccessHashTable[]
+}
+
+model InviteHash {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  hash      String   @unique
 }

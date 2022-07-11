@@ -1,0 +1,25 @@
+---
+import * as db from "../../utils/db";
+import { generateHash } from '../../utils/utils';
+
+
+const param = Astro.params.generatedHash!.toString();
+const inviteHash = await db.getInviteHash(param);
+if (!inviteHash) {
+	return Astro.redirect('/');
+}
+const hash = generateHash();
+try {
+	const dbHash = await db.createHash(hash);
+	await db.deleteInviteHash(inviteHash);
+	Astro.response.headers.set('Set-Cookie', `familyShareAccess=${dbHash}; path=/; max-age=${60 * 60 * 24 * 365};`);
+	Astro.response.status = 301;
+	Astro.response.headers.set('Location', '/');
+}
+catch (e) {
+	console.error(e);
+	return Astro.redirect('/');
+}
+
+---
+

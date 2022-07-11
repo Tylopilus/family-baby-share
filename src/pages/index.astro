@@ -1,23 +1,18 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { getChildren, isLoggedIn } from "../utils/db";
-const cookie = Astro.request.headers.get('cookie');
-const familyShareAccess = cookie?.split('; ').find(item => item.startsWith('familyShareAccess='))?.split('=')[1];
-const loggedIn = await isLoggedIn(familyShareAccess);
-let children;
-if (loggedIn) {
-	children = await getChildren(familyShareAccess);
+const cookies = Astro.request.headers.get('cookie');
+const familyShareAccess = cookies?.split('; ').find(item => item.startsWith('familyShareAccess='));
+const familyShareAccessToken = familyShareAccess?.split('=')[1];
+const loggedIn = await isLoggedIn(familyShareAccessToken);
+if (!loggedIn) {
+	return Astro.redirect('/welcome');
 }
-
+const children = await getChildren(familyShareAccessToken);
 
 ---
 
 <Layout title="Welcome to your favorite place to view your pictures">
-	{!loggedIn && <div class="">
-		<p>Looks like you don't have access yet.</p>
-		<div>Want to share? Sign up</div>
-	</div>}
-	{loggedIn && (
 	<div class="">
 		<header class='text-center'>
 			<h1>Welcome to your favorite place to view pictures of your beloved ones</h1>
@@ -35,5 +30,4 @@ if (loggedIn) {
 			</ul>
 		</main>
 	</div>
-	)}
 </Layout>

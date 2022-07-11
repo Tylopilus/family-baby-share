@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import type { Children } from '@prisma/client';
 const prisma = new PrismaClient();
 
-export async function getHash(hash: string): Promise<string> {
+export async function getHash(hash: string): Promise<string | null> {
   const result = await prisma.hash.findFirst({
     where: {
       hash,
@@ -11,10 +11,40 @@ export async function getHash(hash: string): Promise<string> {
   if (result) {
     return result.hash;
   }
-  return 'not found';
+  return null;
 }
 
-export async function isLoggedIn(hash: string): Promise<boolean> {
+export async function getInviteHash(hash: string): Promise<string | null> {
+  const result = await prisma.inviteHash.findFirst({
+    where: {
+      hash,
+    },
+  });
+  if (result) {
+    return result.hash;
+  }
+  return null;
+}
+
+export async function createHash(hash: string): Promise<string> {
+  const result = await prisma.hash.create({
+    data: {
+      hash,
+      AccessHashTable: { create: [{ childrenId: 1 }] },
+    },
+  });
+  return result.hash;
+}
+
+export async function deleteInviteHash(hash: string): Promise<void> {
+  await prisma.inviteHash.delete({
+    where: {
+      hash,
+    },
+  });
+}
+
+export async function isLoggedIn(hash: string | undefined): Promise<boolean> {
   const result = await prisma.hash.findFirst({
     where: {
       hash,
@@ -26,11 +56,14 @@ export async function isLoggedIn(hash: string): Promise<boolean> {
   return false;
 }
 
-export async function getChildren(hash: string): Promise<
+export async function getChildren(hash: string | undefined): Promise<
   (Children & {
     hash: String;
   })[]
 > {
+  if (!hash) {
+    return [];
+  }
   const dbResult = await prisma.accessHashTable.findMany({
     where: {
       hash,
