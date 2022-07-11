@@ -46,6 +46,7 @@ export async function deleteInviteHash(hash: string): Promise<void> {
 }
 
 export async function isLoggedIn(hash: string | undefined): Promise<boolean> {
+  if (!hash) return false;
   const result = await prisma.hash.findFirst({
     where: {
       hash,
