@@ -15,21 +15,16 @@ export async function getHash(hash: string): Promise<string | null> {
 }
 
 export async function getInviteHash(hash: string): Promise<string | null> {
-  try {
-    const result = await prisma.inviteHash.findFirst({
-      where: {
-        hash,
-      },
-    });
+  const result = await prisma.inviteHash.findFirst({
+    where: {
+      hash,
+    },
+  });
 
-    if (result) {
-      return result.hash;
-    }
-    return null;
-  } catch (e) {
-    console.error(e);
-    throw e;
+  if (result) {
+    return result.hash;
   }
+  return null;
 }
 
 export async function createHash(hash: string): Promise<string> {
