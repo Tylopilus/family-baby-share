@@ -7,7 +7,7 @@ export async function get() {
   // while (true) {
   const hash = generateHash();
   // if (!(await getInviteHash(hash))) {
-  const result = await prisma.hash.create({
+  const result = await prisma.inviteHash.create({
     data: {
       hash,
     },
