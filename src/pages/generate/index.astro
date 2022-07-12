@@ -8,7 +8,7 @@ import Layout from '../../layouts/Layout.astro';
 <script>
 	const btn = document.getElementById('generateLink');
 	btn?.addEventListener('click', async () => {
-		const { link } = await (await fetch('./generate/generate')).json();
+		const { link } = await (await fetch('/api/generate')).json();
 		document.body.appendChild(document.createElement('div')).innerHTML = `<a href="/generate/${link}">${link}</a>`;
 	});
 
