@@ -1,0 +1,28 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { supabase } from "../../utils/supabase";
+type TForm = {
+	name: string;
+	email: string;
+	password: string;
+	passwordConfirmation: string;
+};
+if (Astro.request.method === 'POST') {
+	const formData = await Astro.request.formData();
+	const entries = Object.fromEntries(formData) as TForm;
+	const { user, session, error } = await supabase.auth.signUp({
+		email: 'example@email.com',
+		password: 'example-password',
+	})
+}
+---
+
+<Layout title="Sign up">
+	<form method="post">
+		<label for="email">Email</label>
+		<input type="email" id="email" name="email" />
+		<label for="password">Password</label>
+		<input type="password" id="password" name='password' />
+		<button>Submit</button>
+	</form>
+</Layout>
