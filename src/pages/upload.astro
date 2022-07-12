@@ -2,19 +2,15 @@
 import { v2 as cloudinary } from 'cloudinary';
 import type { UploadApiOptions } from 'cloudinary';
 cloudinary.config({
-	secure: true
+	secure: true,
+	cloud_name: import.meta.env.CLOUDINARY_CLOUD_NAME,
+	api_key: import.meta.env.CLOUDINARY_API_KEY,
+	api_secret: import.meta.env.CLOUDINARY_API_SECRET,
 });
 
 let data = null;
 if (Astro.request.method === 'POST') {
 	const formData = await Astro.request.text();
-	// const file = formData.get('file') as File | null;
-	// if (file) {
-	// 	// convert file to base64 in node
-	// 	const reader = new globalThis.FileReader();
-	// 	// console.log(blob)
-	// }
-	// console.log(formData);
 	console.log(await uploadImage(formData));
 }
 
@@ -38,8 +34,6 @@ async function uploadImage(imagePath: any) {
 		console.error(error);
 	}
 };
-
-// console.log(await uploadImage('https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg'));
 ---
 
 <form method="post" enctype="multipart/form-data">
@@ -48,30 +42,28 @@ async function uploadImage(imagePath: any) {
 	<button type="submit">Submit</button>
 </form>
 <script>
+	import { fileToBase64 } from '../utils/utils';
 	const form = document.querySelector('form')!;
 	form.addEventListener('submit', async e => {
 		e.preventDefault();
 		const formData = new FormData(form);
 		const file = formData.get('file') as File | null;
 		if (file) {
-			console.log(await fileToBase64(file));
-		}
+			// convert file to base64 and send to server
+			try {
+				const base64 = await fileToBase64(file);
+				fetch(window.location.href, {
+					method: 'POST',
+					body: base64,
+					headers: {
+						'Content-Type': 'multipart/form-data'
+					}
+				})
+			} catch (error) {
+				console.error(error);
+			}
+		};
 	});
-	async function fileToBase64(file: File) {
-		return new Promise((resolve, reject) => {
-			if (!file.type.match('image')) {
-				return reject(new Error('INVALID_FILE'));
-			}
 
-			if (!file.type.match('jpeg') && !file.type.match('jpg') && !file.type.match('png')) {
-				return reject(new Error('INVALID_FILE'));
-			}
-			const reader = new FileReader();
-			reader.readAsDataURL(file);
-			reader.onloadend = function () {
-				const base64data = reader.result;
-				resolve(base64data);
-			};
-		});
-	}
+
 </script>
