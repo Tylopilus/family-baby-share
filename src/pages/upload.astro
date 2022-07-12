@@ -1,0 +1,77 @@
+---
+import { v2 as cloudinary } from 'cloudinary';
+import type { UploadApiOptions } from 'cloudinary';
+cloudinary.config({
+	secure: true
+});
+
+let data = null;
+if (Astro.request.method === 'POST') {
+	const formData = await Astro.request.text();
+	// const file = formData.get('file') as File | null;
+	// if (file) {
+	// 	// convert file to base64 in node
+	// 	const reader = new globalThis.FileReader();
+	// 	// console.log(blob)
+	// }
+	// console.log(formData);
+	console.log(await uploadImage(formData));
+}
+
+async function uploadImage(imagePath: any) {
+
+	// Use the uploaded file's name as the asset's public ID and 
+	// allow overwriting the asset with new versions
+	const options: UploadApiOptions = {
+		use_filename: true,
+		unique_filename: false,
+		overwrite: true,
+		folder: import.meta.env.CLOUDINARY_FOLDER,
+	};
+
+	try {
+		// Upload the image
+		const result = await cloudinary.uploader.upload(imagePath, options);
+		console.log(result);
+		return result.public_id;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+// console.log(await uploadImage('https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg'));
+---
+
+<form method="post" enctype="multipart/form-data">
+	<input type="file" name="file" />
+	<input type='text' name='text' />
+	<button type="submit">Submit</button>
+</form>
+<script>
+	const form = document.querySelector('form')!;
+	form.addEventListener('submit', async e => {
+		e.preventDefault();
+		const formData = new FormData(form);
+		const file = formData.get('file') as File | null;
+		if (file) {
+			console.log(await fileToBase64(file));
+		}
+	});
+	async function fileToBase64(file: File) {
+		return new Promise((resolve, reject) => {
+			if (!file.type.match('image')) {
+				return reject(new Error('INVALID_FILE'));
+			}
+
+			if (!file.type.match('jpeg') && !file.type.match('jpg') && !file.type.match('png')) {
+				return reject(new Error('INVALID_FILE'));
+			}
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onloadend = function () {
+				const base64data = reader.result;
+				resolve(base64data);
+			};
+		});
+	}
+</script>
