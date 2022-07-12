@@ -35,7 +35,7 @@ export const signuploadform = () => {
     {
       timestamp: timestamp,
       eager: 'c_pad,h_300,w_400|c_crop,h_200,w_260',
-      folder: import.meta.env.dev ? 'dev' : 'prod',
+      folder: import.meta.env.DEV ? 'dev' : 'prod',
     },
     cloudinary.config().api_secret!
   );

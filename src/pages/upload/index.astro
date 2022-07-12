@@ -1,27 +1,4 @@
 ---
-import { uploadImage } from "../../utils/cloudinary";
-const dev = import.meta.env.DEV;
-
-if (Astro.request.method === 'POST') {
-	const formData = await Astro.request.formData();
-	const files = formData.getAll('file') as File[];
-	for (const file of files) {
-		const buffer = await file.arrayBuffer();
-		const base64Str = Buffer.from(buffer).toString('base64');
-		console.log();
-		const uintarr = new Uint8Array(await file.arrayBuffer());
-		const str = new TextDecoder().decode(uintarr);
-		// console.log(base64Str)
-		try {
-			await uploadImage(str);
-		} catch (e) {
-			console.log(e)
-		}
-	}
-	// console.log(await uploadImage(formData));
-}
-
-
 ---
 
 <form method="post" enctype="multipart/form-data">
@@ -35,13 +12,13 @@ if (Astro.request.method === 'POST') {
 
 
 <script>
+	
 	const signData = await (await fetch('/api/cloudinary')).json();
-	console.log(signData);
 	const url = "https://api.cloudinary.com/v1_1/" + signData.cloudname + "/auto/upload";
 
 	const form = document.querySelector("form")!;
 
-	form.addEventListener("submit", (e) => {
+	form.addEventListener("submit", async (e) => {
 		e.preventDefault();
 
 		const files = (document.querySelector("[type=file]") as HTMLInputElement)!.files!;
@@ -65,47 +42,7 @@ if (Astro.request.method === 'POST') {
 				})
 				.then((data) => {
 					console.log(JSON.parse(data))
-				});
+				}).catch(e => console.error(e));
 		}
 	});
-
-	// import { fileToBase64 } from '../utils/utils';
-	// const form = document.querySelector('form')!;
-	// form.addEventListener('submit', async e => {
-	// 	e.preventDefault();
-	// 	const files = (form.querySelector('input[type="file"') as HTMLInputElement)!.files || [];
-	// 	const newFormData = new FormData();
-	// 	for (const f of files) {
-	// 		const base64 = await fileToBase64(f);
-	// 		newFormData.append('file', base64);
-	// 	}
-	// 	// const formData = new FormData(form);
-	// 	// const file = formData.get('file') as File | null;
-	// 	// if (file) {
-	// 	// 	// convert file to base64 and send to server
-	// 	// 	try {
-	// 	// 		const base64 = await fileToBase64(file);
-	// 	// 		fetch(window.location.href, {
-	// 	// 			method: 'POST',
-	// 	// 			body: base64,
-	// 	// 			headers: {
-	// 	// 				'Content-Type': 'multipart/form-data'
-	// 	// 			}
-	// 	// 		})
-	// 	// 	} catch (error) {
-	// 	// 		console.error(error);
-	// 	// 	}
-	// 	// };
-	// 	try {
-	// 		const res = await fetch(window.location.href, {
-	// 			method: 'POST',
-	// 			body: newFormData,
-	// 			headers: {
-	// 				'Content-Type': 'multipart/form-data'
-	// 			}
-	// 		});
-	// 	} catch (e) {
-	// 		console.error(e);
-	// 	}
-	// });
 </script>
