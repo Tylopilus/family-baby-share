@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+Astro.response.headers.set('Cache-Control', 'max-age=43200,stale-while-revalidate=43200,stale-if-error=43200');
 ---
 
 <Layout title='welcome'>

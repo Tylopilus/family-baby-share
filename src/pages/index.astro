@@ -9,7 +9,6 @@ if (!loggedIn) {
 	return Astro.redirect('/welcome');
 }
 const children = await getChildren(familyShareAccessToken);
-
 ---
 
 <Layout title="Welcome to your favorite place to view your pictures">
