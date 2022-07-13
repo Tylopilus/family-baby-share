@@ -79,9 +79,7 @@ export async function checkLogin(cookies: string | null): Promise<TAccessType> {
     ?.split('=')[1];
 
   if (loginToken) {
-    console.log(loginToken);
     const { user } = await supabase.auth.api.getUser(loginToken);
-    console.log(user);
     if (user) {
       return {
         loggedIn: true,

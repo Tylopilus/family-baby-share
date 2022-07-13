@@ -1,4 +1,16 @@
 ---
+import { checkLogin } from "../../utils/db";
+
+const cookies = Astro.request.headers.get('cookie');
+
+try {
+	const loggedIn = await checkLogin(cookies);
+	if (loggedIn.access !== 'account') {
+		return Astro.redirect('/');
+	}
+} catch (e) {
+	return Astro.redirect('/');
+}
 ---
 
 <form method="post" enctype="multipart/form-data">
@@ -9,10 +21,7 @@
 
 
 
-
-
 <script>
-	
 	const signData = await (await fetch('/api/cloudinary')).json();
 	const url = "https://api.cloudinary.com/v1_1/" + signData.cloudname + "/auto/upload";
 

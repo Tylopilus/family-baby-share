@@ -25,7 +25,11 @@ if (authCookie) {
 </head>
 
 <body class="container mx-auto">
-	{user ? <div>{user.email}</div> : <a href='/login'>Login</a>}
+	{!!user && <div>
+		<div>{user.email}</div>
+		<div><a href='/upload'>Upload images</a></div>
+	</div>}
+
 	<slot />
 </body>
 
