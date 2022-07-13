@@ -1,9 +1,17 @@
 ---
+import { supabase } from "../utils/supabase";
+import type { User } from "@supabase/supabase-js";
+
 export interface Props {
 	title: string;
 }
 
 const { title } = Astro.props as Props;
+const authCookie = Astro.request.headers.get('cookie')?.split('; ').find(cookie => cookie.startsWith('access_token='))?.split('=')[1];
+let user: User | null = null;
+if (authCookie) {
+	user = (await supabase.auth.api.getUser(authCookie)).user;
+}
 ---
 
 <!DOCTYPE html>
@@ -17,6 +25,7 @@ const { title } = Astro.props as Props;
 </head>
 
 <body class="container mx-auto">
+	{user ? <div>{user.email}</div> : <a href='/login'>Login</a>}
 	<slot />
 </body>
 

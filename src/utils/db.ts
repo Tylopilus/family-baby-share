@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import type { Children } from '@prisma/client';
+import { supabase } from './supabase';
 const prisma = new PrismaClient();
 
 export async function getHash(hash: string): Promise<string | null> {
@@ -56,6 +57,52 @@ export async function isLoggedIn(hash: string | undefined): Promise<boolean> {
     return true;
   }
   return false;
+}
+
+export type TAccessType = {
+  loggedIn: boolean;
+  access: 'account' | 'guest' | null;
+};
+export async function checkLogin(cookies: string | null): Promise<TAccessType> {
+  const unauthenticated = {
+    loggedIn: false,
+    access: null,
+  };
+  if (!cookies) return unauthenticated;
+  const familyShareAccess = cookies
+    ?.split('; ')
+    .find((item) => item.startsWith('familyShareAccess='));
+  const familyShareAccessToken = familyShareAccess?.split('=')[1];
+  const loginToken = cookies
+    .split('; ')
+    .find((item) => item.startsWith('access_token='))
+    ?.split('=')[1];
+
+  if (loginToken) {
+    console.log(loginToken);
+    const { user } = await supabase.auth.api.getUser(loginToken);
+    console.log(user);
+    if (user) {
+      return {
+        loggedIn: true,
+        access: 'account',
+      };
+    }
+  }
+  if (familyShareAccess) {
+    const result = await prisma.hash.findFirst({
+      where: {
+        hash: familyShareAccessToken,
+      },
+    });
+    if (result) {
+      return {
+        loggedIn: true,
+        access: 'guest',
+      };
+    }
+  }
+  return unauthenticated;
 }
 
 export async function getChildren(hash: string | undefined): Promise<

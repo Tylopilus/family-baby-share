@@ -1,0 +1,14 @@
+---
+import { supabase } from "../../utils/supabase";
+
+const { user, session, error } = await supabase.auth.signIn({
+	email: 'example@email.com',
+	password: 'example-password'
+})
+if (session) {
+	Astro.response.headers.set('Set-Cookie', `access_token=${session.access_token};path=/;max-age=${session.expires_in}`);
+	Astro.response.status = 301;
+	Astro.response.headers.set('Location', '/');
+}
+---
+

@@ -1,32 +1,33 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { getChildren, isLoggedIn } from "../utils/db";
+import { checkLogin, getChildren, isLoggedIn } from "../utils/db";
 const cookies = Astro.request.headers.get('cookie');
-const familyShareAccess = cookies?.split('; ').find(item => item.startsWith('familyShareAccess='));
-const familyShareAccessToken = familyShareAccess?.split('=')[1];
-const loggedIn = await isLoggedIn(familyShareAccessToken);
-if (!loggedIn) {
+
+// const loggedIn = await isLoggedIn(familyShareAccessToken);
+const loggedIn = await checkLogin(cookies);
+if (!loggedIn.loggedIn) {
 	return Astro.redirect('/welcome');
 }
-const children = await getChildren(familyShareAccessToken);
+// const children = await getChildren(familyShareAccessToken);
+const children = [];
 ---
 
 <Layout title="Welcome to your favorite place to view your pictures">
 	<div class="">
 		<header class='text-center'>
 			<h1>Welcome to your favorite place to view pictures of your beloved ones</h1>
-			<p>
+			{loggedIn.access === 'guest' ? <p>
 				You are using guest mode
-			</p>
+			</p> : null}
 		</header>
 		<main>
-			<ul>
+			<!-- <ul>
 				{children.map(child => (
 				<li>
 					<a href={`${child.hash}`}>{child.name}</a>
 				</li>
 				))}
-			</ul>
+			</ul> -->
 		</main>
 	</div>
 </Layout>
