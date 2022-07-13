@@ -1,6 +1,7 @@
 import * as crypto from 'crypto';
 export function generateHash() {
-  const hash = crypto.randomBytes(20).toString('hex');
+  const hash = crypto.randomUUID();
+  // const hash = crypto.randomBytes(20).toString('hex');
   return hash;
 }
 export async function fileToBase64(file: File): Promise<string> {
