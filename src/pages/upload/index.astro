@@ -50,6 +50,7 @@ try {
 				})
 				.then((data) => {
 					console.log(JSON.parse(data))
+					window.location.href = "/";
 				}).catch(e => console.error(e));
 		}
 	});
