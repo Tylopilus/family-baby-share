@@ -7,8 +7,13 @@ const { user, session, error } = await supabase.auth.signIn({
 })
 if (session) {
 	Astro.response.headers.set('Set-Cookie', `access_token=${session.access_token};path=/;max-age=${session.expires_in}`);
-	Astro.response.status = 301;
-	Astro.response.headers.set('Location', '/');
+	// Astro.response.status = 301;
+	// Astro.response.headers.set('Location', '/');
 }
 ---
 
+<div></div>
+<script>
+	window.location.href = '/';
+
+</script>

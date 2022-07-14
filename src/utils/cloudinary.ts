@@ -28,16 +28,26 @@ export async function uploadImage(imagePath: any) {
   }
 }
 
-export const signuploadform = () => {
+export const signuploadform = (folder: string) => {
   const timestamp = Math.round(new Date().getTime() / 1000);
 
   const signature = cloudinary.utils.api_sign_request(
     {
       timestamp: timestamp,
-      folder: import.meta.env.DEV ? 'dev' : 'prod',
+      folder,
     },
     cloudinary.config().api_secret!
   );
 
   return { timestamp, signature };
 };
+export type Resources = { [k: string]: any; secure_url: string };
+
+export async function getMedia(folder: string) {
+  const { resources }: { resources: Resources[] } =
+    await cloudinary.api.resources({
+      type: 'upload',
+      prefix: folder, // add your folder
+    });
+  return resources;
+}

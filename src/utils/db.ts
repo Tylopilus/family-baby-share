@@ -63,6 +63,14 @@ export type TAccessType = {
   loggedIn: boolean;
   access: 'account' | 'guest' | null;
 };
+export function getLoginToken(cookies: string | null): string | undefined {
+  if (!cookies) return undefined;
+  const loginToken = cookies
+    .split('; ')
+    .find((item) => item.startsWith('access_token='))
+    ?.split('=')[1];
+  return loginToken;
+}
 export async function checkLogin(cookies: string | null): Promise<TAccessType> {
   const unauthenticated = {
     loggedIn: false,
@@ -73,11 +81,7 @@ export async function checkLogin(cookies: string | null): Promise<TAccessType> {
     ?.split('; ')
     .find((item) => item.startsWith('familyShareAccess='));
   const familyShareAccessToken = familyShareAccess?.split('=')[1];
-  const loginToken = cookies
-    .split('; ')
-    .find((item) => item.startsWith('access_token='))
-    ?.split('=')[1];
-
+  const loginToken = getLoginToken(cookies);
   if (loginToken) {
     const { user } = await supabase.auth.api.getUser(loginToken);
     if (user) {
@@ -101,6 +105,12 @@ export async function checkLogin(cookies: string | null): Promise<TAccessType> {
     }
   }
   return unauthenticated;
+}
+
+export async function getUser(loginToken: string | undefined) {
+  if (!loginToken) return null;
+  const { user } = await supabase.auth.api.getUser(loginToken);
+  return user;
 }
 
 export async function getChildren(hash: string | undefined): Promise<

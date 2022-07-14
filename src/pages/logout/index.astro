@@ -1,0 +1,14 @@
+---
+import { getLoginToken, getUser } from "../../utils/db";
+import { supabase } from "../../utils/supabase";
+
+const loginToken = getLoginToken(Astro.request.headers.get('cookie'));
+if (loginToken) {
+	console.log(await supabase.auth.api.signOut(loginToken));
+	console.log(await getUser(loginToken));
+}
+Astro.response.headers.set('Set-Cookie', 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;');
+Astro.response.status = 302;
+Astro.response.headers.set('Location', '/');
+---
+

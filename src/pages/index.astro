@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { checkLogin, getChildren, isLoggedIn } from "../utils/db";
+import { getMedia, Resources } from "../utils/cloudinary";
+import { checkLogin, getChildren, getLoginToken, getUser, isLoggedIn } from "../utils/db";
 const cookies = Astro.request.headers.get('cookie');
 
 // const loggedIn = await isLoggedIn(familyShareAccessToken);
@@ -10,6 +11,12 @@ if (!loggedIn.loggedIn) {
 }
 // const children = await getChildren(familyShareAccessToken);
 const children = [];
+const user = await getUser(await getLoginToken(cookies));
+console.log(user)
+let images: Resources[] = [];
+if (user) {
+	images = await getMedia(`"dev"/${user.id}`);
+}
 ---
 
 <Layout title="Welcome to your favorite place to view your pictures">
@@ -28,6 +35,11 @@ const children = [];
 				</li>
 				))}
 			</ul> -->
+			{images.map(image => (
+			<div class="image-container">
+				<img src={image.url} />
+			</div>
+			))}
 		</main>
 	</div>
 </Layout>

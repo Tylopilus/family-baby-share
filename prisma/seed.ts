@@ -9,6 +9,7 @@ async function main() {
     create: {
       age: 0,
       name: 'Alice',
+      user_uid: 'e284c145-43b3-48b8-9bcf-e7e5f8284d3a',
     },
   });
 

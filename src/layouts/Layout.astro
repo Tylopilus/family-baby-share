@@ -1,16 +1,17 @@
 ---
 import { supabase } from "../utils/supabase";
 import type { User } from "@supabase/supabase-js";
+import { getLoginToken, getUser } from "../utils/db";
 
 export interface Props {
 	title: string;
 }
 
 const { title } = Astro.props as Props;
-const authCookie = Astro.request.headers.get('cookie')?.split('; ').find(cookie => cookie.startsWith('access_token='))?.split('=')[1];
+const loginToken = getLoginToken(Astro.request.headers.get('cookie'));
 let user: User | null = null;
-if (authCookie) {
-	user = (await supabase.auth.api.getUser(authCookie)).user;
+if (loginToken) {
+	user = await getUser(loginToken);
 }
 ---
 
