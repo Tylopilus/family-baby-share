@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { getMedia, Resources } from "../utils/cloudinary";
+import { getImage, getMedia, Resources } from "../utils/cloudinary";
 import { checkLogin, getChildren, getLoginToken, getUser, isLoggedIn } from "../utils/db";
 const cookies = Astro.request.headers.get('cookie');
 
@@ -29,8 +29,7 @@ if (children.length > 0) {
 		</header>
 		<main>
 			{images.map(image => (
-			<div class="image-container">
-				<img src={image.secure_url} />
+			<div class="image-container" set:html={getImage(image)}>
 			</div>
 			))}
 		</main>

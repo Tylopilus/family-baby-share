@@ -46,6 +46,7 @@ export type Image = {
   height: number;
   size: number;
   format: string;
+  public_id: string;
 };
 export type Resources = {
   secure_url: string;
@@ -62,4 +63,14 @@ export async function getMedia(folder: string) {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
   return resources;
+}
+
+export function getImage(img: Resources) {
+  return cloudinary.picture(img.public_id, {
+    crop: 'thumb',
+    width: 400,
+    height: 400,
+    format: 'webp',
+    gravity: 'face',
+  });
 }
