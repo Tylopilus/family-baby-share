@@ -5,17 +5,17 @@ import { checkLogin, getChildren, getLoginToken, getUser, isLoggedIn } from "../
 const cookies = Astro.request.headers.get('cookie');
 
 // const loggedIn = await isLoggedIn(familyShareAccessToken);
-const loggedIn = await checkLogin(cookies);
-if (!loggedIn.loggedIn) {
+const authorizable = await checkLogin(cookies);
+if (!authorizable.loggedIn) {
 	return Astro.redirect('/welcome');
 }
 // const children = await getChildren(familyShareAccessToken);
-const children = [];
-const user = await getUser(await getLoginToken(cookies));
-console.log(user)
+// const user = await getUser(authorizable);
+const children = await getChildren(authorizable);
+
 let images: Resources[] = [];
-if (user) {
-	images = await getMedia(`${import.meta.env.CLOUDINARY_FOLDER}/${user.id}`);
+if (children.length > 0) {
+	images = await getMedia(`${import.meta.env.CLOUDINARY_FOLDER}/${children[0]}`);
 }
 ---
 
@@ -23,7 +23,7 @@ if (user) {
 	<div class="">
 		<header class='text-center'>
 			<h1>Welcome to your favorite place to view pictures of your beloved ones</h1>
-			{loggedIn.access === 'guest' ? <p>
+			{authorizable.access === 'guest' ? <p>
 				You are using guest mode
 			</p> : null}
 		</header>

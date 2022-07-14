@@ -3,6 +3,17 @@ import type { Children } from '@prisma/client';
 import { supabase } from './supabase';
 const prisma = new PrismaClient();
 
+type ExtractTypeOfObj<Obj, Key extends keyof Obj> = Pick<Obj, Key>[Key];
+export type ChildUUID = ExtractTypeOfObj<Children, 'user_uid'>;
+
+// export type ChildUUID = Pick<Children, 'user_uid'>
+
+export type Authoziable = {
+  loggedIn: boolean;
+  access: 'account' | 'guest' | null;
+  token: string | null;
+};
+
 export async function getHash(hash: string): Promise<string | null> {
   const result = await prisma.hash.findFirst({
     where: {
@@ -59,10 +70,6 @@ export async function isLoggedIn(hash: string | undefined): Promise<boolean> {
   return false;
 }
 
-export type TAccessType = {
-  loggedIn: boolean;
-  access: 'account' | 'guest' | null;
-};
 export function getLoginToken(cookies: string | null): string | undefined {
   if (!cookies) return undefined;
   const loginToken = cookies
@@ -71,10 +78,12 @@ export function getLoginToken(cookies: string | null): string | undefined {
     ?.split('=')[1];
   return loginToken;
 }
-export async function checkLogin(cookies: string | null): Promise<TAccessType> {
+
+export async function checkLogin(cookies: string | null): Promise<Authoziable> {
   const unauthenticated = {
     loggedIn: false,
     access: null,
+    token: null,
   };
   if (!cookies) return unauthenticated;
   const familyShareAccess = cookies
@@ -88,6 +97,7 @@ export async function checkLogin(cookies: string | null): Promise<TAccessType> {
       return {
         loggedIn: true,
         access: 'account',
+        token: loginToken,
       };
     }
   }
@@ -101,6 +111,7 @@ export async function checkLogin(cookies: string | null): Promise<TAccessType> {
       return {
         loggedIn: true,
         access: 'guest',
+        token: result.hash,
       };
     }
   }
@@ -113,28 +124,33 @@ export async function getUser(loginToken: string | undefined) {
   return user;
 }
 
-export async function getChildren(hash: string | undefined): Promise<
-  (Children & {
-    hash: String;
-  })[]
-> {
-  if (!hash) {
-    return [];
+export async function getChildren(
+  authorizable: Authoziable
+): Promise<string[]> {
+  const children: ChildUUID[] = [];
+  if (authorizable.token && authorizable.access === 'guest') {
+    const dbResult = await prisma.accessHashTable.findMany({
+      where: {
+        hash: authorizable.token,
+      },
+      include: {
+        children: true,
+      },
+    });
+    dbResult.forEach((item) => {
+      children.push(item.children.user_uid);
+    });
   }
-  const dbResult = await prisma.accessHashTable.findMany({
-    where: {
-      hash,
-    },
-    include: {
-      children: true,
-    },
-  });
-  const result = dbResult.map((item) => {
-    return {
-      ...item.children,
-      hash,
-    };
-  });
-  if (result.length === 0) return [];
-  return result;
+  if (authorizable.access === 'account' && authorizable.token) {
+    const user = await getUser(authorizable.token);
+    const dbResult = await prisma.children.findMany({
+      where: {
+        user_uid: user?.id,
+      },
+    });
+    dbResult.forEach((item) => {
+      children.push(item.user_uid);
+    });
+  }
+  return children;
 }
