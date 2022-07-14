@@ -12,7 +12,7 @@ export async function get({ request }: { request: Request }) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const folder = `import.meta.env.CLOUDINARY_FOLDER/${user.id}`;
+  const folder = `${import.meta.env.CLOUDINARY_FOLDER}/${user.id}`;
   const sig = signuploadform(folder);
   return new Response(
     JSON.stringify({
