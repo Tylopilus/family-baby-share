@@ -41,7 +41,16 @@ export const signuploadform = (folder: string) => {
 
   return { timestamp, signature };
 };
-export type Resources = { [k: string]: any; secure_url: string };
+export type Image = {
+  width: number;
+  height: number;
+  size: number;
+  format: string;
+};
+export type Resources = {
+  secure_url: string;
+  created_at: string;
+} & Image;
 
 export async function getMedia(folder: string) {
   const { resources }: { resources: Resources[] } =
@@ -49,5 +58,8 @@ export async function getMedia(folder: string) {
       type: 'upload',
       prefix: folder, // add your folder
     });
+  resources.sort((a, b) => {
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
   return resources;
 }

@@ -28,16 +28,9 @@ if (children.length > 0) {
 			</p> : null}
 		</header>
 		<main>
-			<!-- <ul>
-				{children.map(child => (
-				<li>
-					<a href={`${child.hash}`}>{child.name}</a>
-				</li>
-				))}
-			</ul> -->
 			{images.map(image => (
 			<div class="image-container">
-				<img src={image.url} />
+				<img src={image.secure_url} />
 			</div>
 			))}
 		</main>
