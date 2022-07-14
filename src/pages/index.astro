@@ -15,7 +15,7 @@ const user = await getUser(await getLoginToken(cookies));
 console.log(user)
 let images: Resources[] = [];
 if (user) {
-	images = await getMedia(`"dev"/${user.id}`);
+	images = await getMedia(`${import.meta.env.CLOUDINARY_FOLDER}/${user.id}`);
 }
 ---
 
