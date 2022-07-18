@@ -2,5 +2,7 @@
   "files.exclude": {
     // "supabase": true,
     "node_modules": true
-  }
+  },
+  "debug.openDebug": "neverOpen",
+  "debug.internalConsoleOptions": "neverOpen"
 }

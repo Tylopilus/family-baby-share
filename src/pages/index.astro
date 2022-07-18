@@ -4,13 +4,11 @@ import { getImage, getMedia, Resources } from "../utils/cloudinary";
 import { checkLogin, getChildren, getLoginToken, getUser, isLoggedIn } from "../utils/db";
 const cookies = Astro.request.headers.get('cookie');
 
-// const loggedIn = await isLoggedIn(familyShareAccessToken);
 const authorizable = await checkLogin(cookies);
 if (!authorizable.loggedIn) {
 	return Astro.redirect('/welcome');
 }
-// const children = await getChildren(familyShareAccessToken);
-// const user = await getUser(authorizable);
+
 const children = await getChildren(authorizable);
 
 let images: Resources[] = [];
@@ -28,10 +26,28 @@ if (children.length > 0) {
 			</p> : null}
 		</header>
 		<main>
-			{images.map(image => (
-			<div class="image-container" set:html={getImage(image)}>
+			<div class="grid grid-cols-4 gap-2 image-container">
+				{images.map(image => (
+				<div class="image-wrapper" set:html={getImage(image)} />
+				))}
 			</div>
-			))}
 		</main>
 	</div>
 </Layout>
+
+<style>
+	.image-container {}
+
+	.image-wrapper {
+		transition: transform .3s ease-in-out;
+	}
+
+	.image-wrapper:first-child {
+		grid-column-start: span 2;
+		grid-row-start: span 2;
+	}
+
+	.image-wrapper:hover {
+		transform: scale(1.05);
+	}
+</style>

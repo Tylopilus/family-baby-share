@@ -2,6 +2,7 @@
 import { supabase } from "../utils/supabase";
 import type { User } from "@supabase/supabase-js";
 import { getLoginToken, getUser } from "../utils/db";
+import Header from "../components/Header";
 
 export interface Props {
 	title: string;
@@ -23,9 +24,14 @@ if (loginToken) {
 	<meta name="viewport" content="width=device-width" />
 	<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 	<title>{title}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
 </head>
 
 <body class="container mx-auto">
+	<header>
+		<Header variant="guest" />
+	</header>
 	{!!user && <div>
 		<div>{user.email}</div>
 		<div><a href='/upload'>Upload images</a></div>
