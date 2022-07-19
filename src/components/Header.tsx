@@ -1,19 +1,28 @@
 import { Switch, Match } from 'solid-js';
+import { Authoziable } from '../utils/db';
+import Menu from './Menu';
 import Button from './Shared/Button';
-export type HeaderProps = {
-  variant: 'user' | 'guest';
-};
+import { MenuIcon, ShareIcon } from './Shared/Icons';
+export type HeaderProps = Pick<Authoziable, 'access'>;
 const Header = (props: HeaderProps) => {
   return (
-    <div class="flex justify-between">
+    <div class="flex justify-between items-center">
       <div class="text-xl">Share with Fam</div>
 
       <Switch>
-        <Match when={props.variant === 'user'}>
-          <div>user</div>
+        <Match when={props.access === 'account'}>
+          <div class="flex gap-4 items-center">
+            <Button variant="primary" class="flex items-center gap-1">
+              Share
+              <ShareIcon />
+            </Button>
+            <Menu />
+          </div>
         </Match>
-        <Match when={props.variant === 'guest'}>
-          <Button class="border rounded-full px-4 py-1 border-black">
+        <Match when={props.access === 'guest' || props.access === null}>
+          <Button
+            href="/login"
+            class="border rounded-full px-4 py-1 border-black">
             Login
           </Button>
         </Match>

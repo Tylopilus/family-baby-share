@@ -1,15 +1,37 @@
-import type { JSX } from 'solid-js/jsx-runtime';
+import { JSXElement, mergeProps } from 'solid-js';
 
 export type ButtonProps = {
   href?: string;
-  children: JSX.Element;
+  children: JSXElement;
   class?: string;
+  variant?: 'primary' | 'secondary';
+  styled?: boolean;
   [key: string]: unknown;
 };
 const Button = (Props: ButtonProps) => {
-  if (Props.href) {
-    return <a href={Props.href}>{Props.children}</a>;
+  const props = mergeProps({ styled: true, variant: 'secondary' }, Props);
+  const primaryStyle = 'border-green-500';
+  const classList = 'border rounded-full px-4 py-1 border-black';
+  const classes =
+    props.variant === 'primary' ? `${classList} ${primaryStyle}` : classList;
+  if (props.href) {
+    return (
+      <a
+        href={props.href}
+        class={`${props.styled ? classes : ''} ${
+          props.class ? props.class : ''
+        }`}
+        {...props}>
+        {props.children}
+      </a>
+    );
   }
-  return <button {...Props}>{Props.children}</button>;
+  return (
+    <button
+      class={`${props.styled ? classes : ''} ${props.class ? props.class : ''}`}
+      {...props}>
+      {props.children}
+    </button>
+  );
 };
 export default Button;

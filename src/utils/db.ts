@@ -93,6 +93,7 @@ export async function checkLogin(cookies: string | null): Promise<Authoziable> {
   const loginToken = getLoginToken(cookies);
   if (loginToken) {
     const { user } = await supabase.auth.api.getUser(loginToken);
+    // TODO: generate new token so user's token is refreshed
     if (user) {
       return {
         loggedIn: true,

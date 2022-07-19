@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { getImage, getMedia, Resources } from "../utils/cloudinary";
-import { checkLogin, getChildren, getLoginToken, getUser, isLoggedIn } from "../utils/db";
+import { checkLogin, getChildren } from "../utils/db";
 const cookies = Astro.request.headers.get('cookie');
 
 const authorizable = await checkLogin(cookies);

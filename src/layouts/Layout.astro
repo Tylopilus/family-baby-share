@@ -1,8 +1,8 @@
 ---
-import { supabase } from "../utils/supabase";
 import type { User } from "@supabase/supabase-js";
-import { getLoginToken, getUser } from "../utils/db";
+import { checkLogin, getLoginToken, getUser } from "../utils/db";
 import Header from "../components/Header";
+import '../assets/global.css';
 
 export interface Props {
 	title: string;
@@ -10,10 +10,12 @@ export interface Props {
 
 const { title } = Astro.props as Props;
 const loginToken = getLoginToken(Astro.request.headers.get('cookie'));
+const loginState = await checkLogin(Astro.request.headers.get('cookie'));
 let user: User | null = null;
 if (loginToken) {
 	user = await getUser(loginToken);
 }
+
 ---
 
 <!DOCTYPE html>
@@ -30,7 +32,7 @@ if (loginToken) {
 
 <body class="container mx-auto">
 	<header class="my-6 ">
-		<Header variant="guest" />
+		<Header access={loginState.access} client:idle />
 	</header>
 	{!!user && <div>
 		<div>{user.email}</div>
