@@ -27,8 +27,11 @@ model AccessHashTable {
 
 model Children {
   id              Int               @id @default(autoincrement())
-  name            String
+  firstName       String
+  lastName        String?
   age             Int
+  dob             DateTime?
+  profilePicture  String?
   user_uid        String            @unique
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @default(now())
