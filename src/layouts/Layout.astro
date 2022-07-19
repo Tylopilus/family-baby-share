@@ -11,11 +11,6 @@ export interface Props {
 const { title } = Astro.props as Props;
 const loginToken = getLoginToken(Astro.request.headers.get('cookie'));
 const loginState = await checkLogin(Astro.request.headers.get('cookie'));
-let user: User | null = null;
-if (loginToken) {
-	user = await getUser(loginToken);
-}
-
 ---
 
 <!DOCTYPE html>
@@ -31,14 +26,9 @@ if (loginToken) {
 </head>
 
 <body class="container mx-auto">
-	<header class="my-6 ">
+	<header class="my-6">
 		<Header access={loginState.access} client:idle />
 	</header>
-	{!!user && <div>
-		<div>{user.email}</div>
-		<div><a href='/upload'>Upload images</a></div>
-	</div>}
-
 	<slot />
 </body>
 
