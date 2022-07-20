@@ -26,7 +26,7 @@ const loginState = await checkLogin(Astro.request.headers.get('cookie'));
 </head>
 
 <body class="container mx-auto">
-	<header class="my-6">
+	<header class="my-10 mt-6">
 		<Header access={loginState.access} client:idle />
 	</header>
 	<slot />

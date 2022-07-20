@@ -155,3 +155,12 @@ export async function getChildren(
   }
   return children;
 }
+
+export async function getChild(uuid: string): Promise<Children | null> {
+  const result = await prisma.children.findFirst({
+    where: {
+      user_uid: uuid,
+    },
+  });
+  return result;
+}

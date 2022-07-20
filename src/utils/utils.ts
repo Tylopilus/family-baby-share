@@ -44,3 +44,18 @@ export async function fileToBlob(file: File): Promise<Blob> {
     resolve(file);
   });
 }
+
+type Obj = {
+  date: string;
+  name: string;
+};
+// turn obj into map grouped by key 'date'
+export const groupBy = (obj: Obj[], key: string) => {
+  return obj.reduce((acc, curr) => {
+    if (!acc.has(curr.date)) {
+      acc.set(curr.date, []);
+    }
+    acc.get(curr.date)?.push(curr.name);
+    return acc;
+  }, new Map<string, string[]>());
+};

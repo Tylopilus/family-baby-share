@@ -10,6 +10,9 @@ async function main() {
       age: 0,
       firstName: 'Alice',
       lastName: 'Wonderland',
+      dob: new Date('2022-02-23'),
+      profilePicture:
+        'https://res.cloudinary.com/dxbuuch1c/image/upload/c_thumb,g_face,h_400,w_400,r_max/v1/dev/e284c145-43b3-48b8-9bcf-e7e5f8284d3a/brytny-com-C4rXIFSzEXk-unsplash_xiy0sk.webp',
       user_uid: 'e284c145-43b3-48b8-9bcf-e7e5f8284d3a',
     },
   });

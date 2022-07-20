@@ -1,0 +1,44 @@
+---
+import { getImage } from "../utils/cloudinary";
+import type { Resources } from "../utils/cloudinary";
+import type { Children } from '@prisma/client';
+import { getChild } from "../utils/db";
+export type Props = {
+	images: Resources[];
+	child: string;
+}
+
+const { images } = Astro.props as Props;
+const child = await getChild(Astro.props.child)
+---
+
+{!child && <div>Loading...</div>}
+{/*<span>Third Month (23.04.22 - 22.05.22)</span>*/}
+<div class="grid grid-cols-4 gap-2 image-container">
+	{images.map(image => (
+	<div class="image-wrapper" set:html={getImage(image)} />
+	))}
+</div>
+
+<style>
+	.image-container {}
+
+	.image-wrapper {
+		transition: transform .3s ease-in-out;
+	}
+
+	.image-wrapper:first-child {
+		grid-column-start: span 2;
+		grid-row-start: span 2;
+	}
+
+	.image-wrapper:hover {
+		transform: scale(1.05);
+	}
+</style>
+<style is:global>
+	.image-wrapper img {
+		width: 100%;
+		height: auto;
+	}
+</style>
