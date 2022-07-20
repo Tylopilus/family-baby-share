@@ -1,7 +1,7 @@
 import { Switch, Match } from 'solid-js';
 import { Authoziable } from '../utils/db';
 import Menu from './Menu';
-import Share from './Share';
+import ShareMenu from './ShareMenu';
 import Button from './Shared/Button';
 import { MenuIcon, ShareIcon } from './Shared/Icons';
 export type HeaderProps = Pick<Authoziable, 'access'>;
@@ -18,7 +18,7 @@ const Header = (props: HeaderProps) => {
         <Switch>
           <Match when={props.access === 'account'}>
             <div class="flex gap-4 items-center">
-              <Share />
+              <ShareMenu />
               <Menu />
             </div>
           </Match>

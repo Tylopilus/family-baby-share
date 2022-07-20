@@ -21,6 +21,7 @@ model AccessHashTable {
   childrenId Int
   hashes     Hash     @relation(fields: [hash], references: [hash])
   hash       String
+  recipient  String?
 
   @@id([childrenId, hash])
 }

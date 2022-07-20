@@ -24,7 +24,9 @@ async function main() {
     update: {},
     create: {
       hash: 'pseudorandom',
-      AccessHashTable: { create: [{ childrenId: 1 }] },
+      AccessHashTable: {
+        create: [{ childrenId: 1, recipient: 'sampledevice' }],
+      },
     },
   });
 }
