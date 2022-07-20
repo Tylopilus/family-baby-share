@@ -11,13 +11,11 @@ type FormEvent = Event & {
 
 const Share = () => {
   const [submitted, setSubmitted] = createSignal(false);
-  const [childName, setChildName] = createSignal('');
   const [inviteLink, setInviteLink] = createSignal('');
   let inputRef: HTMLInputElement | undefined = undefined;
   const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    setChildName('Alice Wonderland');
 
     const res = (await (
       await fetch('/api/generate', {
@@ -64,7 +62,7 @@ const Share = () => {
           <span class="block text-4xl mt-3">🎉</span>
           <p class="block mt-6">
             Send this link to {inputRef!.value} to access the images of{' '}
-            {childName()}
+            {document.querySelector('main')?.dataset.childName || ''}
           </p>
           <div>
             <span class="font-bold mt-2">{inviteLink()}</span>

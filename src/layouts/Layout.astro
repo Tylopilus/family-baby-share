@@ -9,7 +9,6 @@ export interface Props {
 }
 
 const { title } = Astro.props as Props;
-const loginToken = getLoginToken(Astro.request.headers.get('cookie'));
 const loginState = await checkLogin(Astro.request.headers.get('cookie'));
 ---
 
