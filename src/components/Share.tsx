@@ -33,7 +33,7 @@ const Share = () => {
       hash: string;
       recipient: string;
     };
-    setInviteLink(`http://localhost:3000/inv/${res.hash}`);
+    setInviteLink(`${location.hostname}/inv/${res.hash}`);
   };
   return (
     <>
