@@ -10,8 +10,8 @@ if (!inviteHash) {
 }
 const hash = generateHash();
 try {
-	const dbHash = await db.createHash(hash);
-	await db.deleteInviteHash(inviteHash);
+	const dbHash = await db.createHash(hash, inviteHash.recipient || '');
+	await db.deleteInviteHash(inviteHash.hash);
 	Astro.response.headers.set('Set-Cookie', `familyShareAccess=${dbHash}; path=/; max-age=${60 * 60 * 24 * 365};`);
 	Astro.response.status = 301;
 	Astro.response.headers.set('Location', '/');

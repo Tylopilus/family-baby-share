@@ -1,20 +1,31 @@
 import { PrismaClient } from '@prisma/client';
-import { getInviteHash } from '../../utils/db';
+import {
+  checkLogin,
+  getInviteHash,
+  isLoggedIn,
+  prismaClient,
+} from '../../utils/db';
 import { generateHash } from '../../utils/utils';
-const prisma = new PrismaClient();
-export async function get() {
-  // const hash = crypto.getRandomValues(randomBytes(20)).toString('hex');
-  while (true) {
-    const hash = generateHash();
-    if (!(await getInviteHash(hash))) {
-      const result = await prisma.inviteHash.create({
-        data: {
-          hash,
-        },
-      });
-      return new Response(JSON.stringify({ link: result.hash }), {
-        status: 200,
-      });
-    }
+// export async function get() {
+//   // const hash = crypto.getRandomValues(randomBytes(20)).toString('hex');
+// }
+
+export async function post({ request }: { request: Request }) {
+  const cookies = request.headers.get('cookie');
+  const isLoggedIn = await checkLogin(cookies);
+  if (isLoggedIn.access !== 'account') {
+    return new Response('Unauthorized', { status: 401 });
+  }
+  const hash = generateHash();
+  if (!(await getInviteHash(hash))) {
+    const result = await prismaClient.inviteHash.create({
+      data: {
+        hash,
+        recipient: (await request.json()).recipient,
+      },
+    });
+    return new Response(JSON.stringify(result), {
+      status: 200,
+    });
   }
 }

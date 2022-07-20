@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client';
-import type { Children } from '@prisma/client';
+import type { Children, InviteHash } from '@prisma/client';
 import { supabase } from './supabase';
 const prisma = new PrismaClient();
+export const prismaClient = prisma;
 
 type ExtractTypeOfObj<Obj, Key extends keyof Obj> = Pick<Obj, Key>[Key];
 export type ChildUUID = ExtractTypeOfObj<Children, 'user_uid'>;
@@ -26,7 +27,7 @@ export async function getHash(hash: string): Promise<string | null> {
   return null;
 }
 
-export async function getInviteHash(hash: string): Promise<string | null> {
+export async function getInviteHash(hash: string): Promise<InviteHash | null> {
   const result = await prisma.inviteHash.findFirst({
     where: {
       hash,
@@ -34,16 +35,19 @@ export async function getInviteHash(hash: string): Promise<string | null> {
   });
 
   if (result) {
-    return result.hash;
+    return result;
   }
   return null;
 }
 
-export async function createHash(hash: string): Promise<string> {
+export async function createHash(
+  hash: string,
+  recipient: string
+): Promise<string> {
   const result = await prisma.hash.create({
     data: {
       hash,
-      AccessHashTable: { create: [{ childrenId: 1 }] },
+      AccessHashTable: { create: [{ childrenId: 1, recipient }] },
     },
   });
   return result.hash;
@@ -163,4 +167,15 @@ export async function getChild(uuid: string): Promise<Children | null> {
     },
   });
   return result;
+}
+
+export async function getRecipient(
+  inviteHash: string
+): Promise<InviteHash | null> {
+  const res = await prisma.inviteHash.findFirst({
+    where: {
+      hash: inviteHash,
+    },
+  });
+  return res;
 }

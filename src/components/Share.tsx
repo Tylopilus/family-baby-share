@@ -12,12 +12,28 @@ type FormEvent = Event & {
 const Share = () => {
   const [submitted, setSubmitted] = createSignal(false);
   const [childName, setChildName] = createSignal('');
+  const [inviteLink, setInviteLink] = createSignal('');
   let inputRef: HTMLInputElement | undefined = undefined;
-  const submitHandler = (e: FormEvent) => {
+  const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
-    console.log('send');
     setSubmitted(true);
     setChildName('Alice Wonderland');
+
+    const res = (await (
+      await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ recipient: inputRef!.value }),
+      })
+    ).json()) as {
+      id: string;
+      createdAt: string;
+      hash: string;
+      recipient: string;
+    };
+    setInviteLink(`http://localhost:3000/inv/${res.hash}`);
   };
   return (
     <>
@@ -51,12 +67,14 @@ const Share = () => {
             {childName()}
           </p>
           <div>
-            <span class="font-bold mt-2">
-              https://sharewfam.com/inv/123asdyj12z234
-            </span>
+            <span class="font-bold mt-2">{inviteLink()}</span>
           </div>
           <div class="flex justify-between mt-4">
-            <Button variant="primary">
+            <Button
+              variant="primary"
+              onClick={async () =>
+                await navigator.clipboard.writeText(inviteLink())
+              }>
               Copy link
               <span class="inline-block ml-2">
                 <ShareIcon color="#ffffff" />
