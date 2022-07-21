@@ -6,6 +6,7 @@ export const prismaClient = prisma;
 
 type ExtractTypeOfObj<Obj, Key extends keyof Obj> = Pick<Obj, Key>[Key];
 export type ChildUUID = ExtractTypeOfObj<Children, 'user_uid'>;
+export type TokenType = 'familyShareAccess' | 'access_token';
 
 // export type ChildUUID = Pick<Children, 'user_uid'>
 
@@ -74,11 +75,14 @@ export async function isLoggedIn(hash: string | undefined): Promise<boolean> {
   return false;
 }
 
-export function getLoginToken(cookies: string | null): string | undefined {
+export function getLoginToken(
+  cookies: string | null,
+  tokenName: TokenType = 'access_token'
+): string | undefined {
   if (!cookies) return undefined;
   const loginToken = cookies
     .split('; ')
-    .find((item) => item.startsWith('access_token='))
+    .find((item) => item.startsWith(`${tokenName}=`))
     ?.split('=')[1];
   return loginToken;
 }
@@ -90,11 +94,8 @@ export async function checkLogin(cookies: string | null): Promise<Authoziable> {
     token: null,
   };
   if (!cookies) return unauthenticated;
-  const familyShareAccess = cookies
-    ?.split('; ')
-    .find((item) => item.startsWith('familyShareAccess='));
-  const familyShareAccessToken = familyShareAccess?.split('=')[1];
-  const loginToken = getLoginToken(cookies);
+  const familyShareAccessToken = getLoginToken(cookies, 'familyShareAccess');
+  const loginToken = getLoginToken(cookies, 'access_token');
   if (loginToken) {
     const { user } = await supabase.auth.api.getUser(loginToken);
     // TODO: generate new token so user's token is refreshed
@@ -106,7 +107,7 @@ export async function checkLogin(cookies: string | null): Promise<Authoziable> {
       };
     }
   }
-  if (familyShareAccess) {
+  if (familyShareAccessToken) {
     const result = await prisma.hash.findFirst({
       where: {
         hash: familyShareAccessToken,
