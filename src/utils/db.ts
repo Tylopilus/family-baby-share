@@ -130,6 +130,13 @@ export async function getUser(loginToken: string | undefined) {
   return user;
 }
 
+export async function getUserFromCookie(
+  cookies: string | null
+): ReturnType<typeof getUser> {
+  const loginToken = getLoginToken(cookies, 'access_token');
+  return getUser(loginToken);
+}
+
 export async function getChildren(
   authorizable: Authoziable
 ): Promise<string[]> {
