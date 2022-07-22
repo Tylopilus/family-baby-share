@@ -3,7 +3,7 @@ import { Authoziable } from '../utils/db';
 import Menu from './Menu';
 import ShareMenu from './ShareMenu';
 import Button from './Shared/Button';
-import { MenuIcon, ShareIcon } from './Shared/Icons';
+
 export type HeaderProps = Pick<Authoziable, 'access'>;
 const Header = (props: HeaderProps) => {
   return (
@@ -14,7 +14,9 @@ const Header = (props: HeaderProps) => {
         </div>
       )}
       <div class="flex justify-between items-center">
-        <div class="text-xl">Share with Fam</div>
+        <a class="text-xl block" href="/">
+          Share with Fam
+        </a>
         <Switch>
           <Match when={props.access === 'account'}>
             <div class="flex gap-4 items-center">
