@@ -31,7 +31,7 @@ const Share = () => {
       hash: string;
       recipient: string;
     };
-    setInviteLink(`${location.origin}/inv/${res.hash}`);
+    setInviteLink(`${location.hostname}/inv/${res.hash}`);
   };
   return (
     <>
@@ -54,7 +54,7 @@ const Share = () => {
           </Button>
         </form>
       </Show>
-      <Show when={submitted()}>
+      <Show when={submitted() && inviteLink()}>
         <div class="max-w-sm">
           <span class="text-2xl">
             Link for <span class="block font-bold">{inputRef!.value}</span>
@@ -65,7 +65,7 @@ const Share = () => {
             {document.querySelector('main')?.dataset.childName || ''}
           </p>
           <div>
-            <span class="font-bold mt-2">{inviteLink()}</span>
+            <span class="font-bold mt-2">https://{inviteLink()}</span>
           </div>
           <div class="flex justify-between mt-4">
             <Button
@@ -78,7 +78,12 @@ const Share = () => {
                 <ShareIcon color="#ffffff" />
               </span>
             </Button>
-            <Button variant="primary">
+            <Button
+              variant="primary"
+              href="https://api.whatsapp.com/send?text=www.google.com"
+              data-action="share/whatsapp/share"
+              target="_blank"
+              rel="noopener noreferrer">
               Whatsapp
               <span class="inline-block ml-2">
                 <ShareIcon color="#ffffff" />
