@@ -54,15 +54,25 @@ export type Resources = {
 } & Image;
 
 export async function getMedia(folder: string) {
-  const { resources }: { resources: Resources[] } =
-    await cloudinary.api.resources({
+  const images: Resources[] = [];
+  async function getImages(page: number) {
+    const result = await cloudinary.api.resources({
       type: 'upload',
-      prefix: folder, // add your folder
+      prefix: folder,
+      max_results: 100,
+      page,
     });
-  resources.sort((a, b) => {
+    images.push(...result.resources);
+    if (result.next_cursor) {
+      await getImages(page + 1);
+    }
+  }
+  await getImages(1);
+
+  images.sort((a, b) => {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
-  return resources;
+  return images;
 }
 
 export function getImage(img: Resources) {
