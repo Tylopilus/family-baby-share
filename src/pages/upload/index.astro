@@ -1,5 +1,7 @@
 ---
 import { checkLogin } from "../../utils/db";
+import Upload from '../../components/Upload'
+import Layout from "../../layouts/Layout.astro";
 
 const cookies = Astro.request.headers.get('cookie');
 
@@ -13,15 +15,18 @@ try {
 }
 ---
 
-<form method="post" enctype="multipart/form-data">
-	<input type="file" name="file" multiple />
+<!-- <form method="post" enctype="multipart/form-data">
+	<label for="file">File</label>
+	<input type="file" name="file" multiple id='file' hidden />
 	<input type='text' name='text' />
 	<button type="submit">Submit</button>
-</form>
+</form> -->
+<Layout title="Upload images">
+	<Upload client:load />
+</Layout>
 
 
-
-<script>
+<!-- <script>
 	const signData = await (await fetch('/api/cloudinary')).json();
 	const url = "https://api.cloudinary.com/v1_1/" + signData.cloudname + "/auto/upload";
 
@@ -54,4 +59,4 @@ try {
 				}).catch(e => console.error(e));
 		}
 	});
-</script>
+</script> -->
