@@ -5,38 +5,36 @@ import { UploadIndicator } from './Shared/Icons';
 const Upload = () => {
   const [selectedItems, setSelectedItems] = createSignal(0);
   const [submitting, setSubmitting] = createSignal(false);
-  const submitHandler = async (e: Event) => {
-    const signData = await (await fetch('/api/cloudinary')).json();
+
+  async function uploadFiles(signData: any, files: FileList) {
     const url =
       'https://api.cloudinary.com/v1_1/' + signData.cloudname + '/auto/upload';
-
-    const files = (document.querySelector('[type=file]') as HTMLInputElement)!
-      .files!;
     const formData = new FormData();
 
-    // Append parameters to the form data. The parameters that are signed using
-    // the signing function (signuploadform) need to match these.
     for (const file of files) {
       formData.append('file', file);
       formData.append('api_key', signData.apikey);
       formData.append('timestamp', signData.timestamp);
       formData.append('signature', signData.signature);
       formData.append('folder', signData.folder);
-      fetch(url, {
+      await fetch(url, {
         method: 'POST',
         body: formData,
-      })
-        .then((response) => {
-          return response.text();
-        })
-        .then((data) => {
-          console.log(JSON.parse(data));
-          window.location.href = '/';
-        })
-        .catch((e) => console.error(e));
+      });
     }
-    // console.log('submit');
+  }
+  const submitHandler = async (e: Event) => {
+    const files = (document.querySelector('[type=file]') as HTMLInputElement)!
+      .files!;
+    const signData = await (await fetch('/api/cloudinary')).json();
+
     setSubmitting(true);
+
+    // Append parameters to the form data. The parameters that are signed using
+    // the signing function (signuploadform) need to match these.
+    await uploadFiles(signData, files);
+    window.location.href = '/';
+    // console.log('submit');
   };
   return (
     // <form method="post" enctype="multipart/form-data">
