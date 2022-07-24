@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import type { Children, InviteHash } from '@prisma/client';
 import { supabase } from './supabase';
+
 const prisma = new PrismaClient();
 export const prismaClient = prisma;
 
@@ -113,6 +114,7 @@ export async function checkLogin(cookies: string | null): Promise<Authoziable> {
         hash: familyShareAccessToken,
       },
     });
+
     if (result) {
       return {
         loggedIn: true,
@@ -190,7 +192,7 @@ export async function getRecipient(
 
 export async function getEligableUsers(
   childID: ChildUUID | null | undefined
-): Promise<string[]> {
+): Promise<Array<{ recipient: string | null; hash: string }>> {
   if (!childID) return [];
   const result = await prisma.accessHashTable.findMany({
     where: {
@@ -202,6 +204,24 @@ export async function getEligableUsers(
       children: true,
     },
   });
-  const users = result.map((item) => item.recipient || '');
+  const users = result.map((item) => ({
+    recipient: item.recipient,
+    hash: item.hash,
+  }));
   return users;
+}
+
+export async function deleteRecipient(
+  hash: string,
+  childID: ChildUUID | undefined
+) {
+  if (!childID) return;
+  return await prisma.accessHashTable.deleteMany({
+    where: {
+      hash,
+      children: {
+        user_uid: childID,
+      },
+    },
+  });
 }

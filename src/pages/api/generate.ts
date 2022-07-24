@@ -1,10 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-import {
-  checkLogin,
-  getInviteHash,
-  isLoggedIn,
-  prismaClient,
-} from '../../utils/db';
+import { checkLogin, getInviteHash, prismaClient } from '../../utils/db';
 import { generateHash } from '../../utils/utils';
 // export async function get() {
 //   // const hash = crypto.getRandomValues(randomBytes(20)).toString('hex');

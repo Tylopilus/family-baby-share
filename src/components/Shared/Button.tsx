@@ -6,6 +6,7 @@ export type ButtonProps = {
   class?: string;
   variant?: 'primary' | 'secondary';
   styled?: boolean;
+  onClick?: (e: any) => void;
   [key: string]: unknown;
 };
 const Button = (Props: ButtonProps) => {
@@ -21,7 +22,8 @@ const Button = (Props: ButtonProps) => {
         class={`${props.styled ? classes : ''} ${
           props.class ? props.class : ''
         }`}
-        {...props}>
+        {...props}
+        onClick={props.onClick}>
         {props.children}
       </a>
     );
@@ -29,6 +31,7 @@ const Button = (Props: ButtonProps) => {
   return (
     <button
       class={`${props.styled ? classes : ''} ${props.class ? props.class : ''}`}
+      onClick={props.onClick}
       {...props}>
       {props.children}
     </button>

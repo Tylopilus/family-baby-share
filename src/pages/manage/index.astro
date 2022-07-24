@@ -1,6 +1,8 @@
 ---
 import { checkLogin, getChild, getChildren, getEligableUsers } from "../../utils/db";
 import Layout from "../../layouts/Layout.astro";
+import DeleteEligable from "../../components/DeleteEligable";
+
 
 const cookies = Astro.request.headers.get('cookie');
 const authorizable = await checkLogin(cookies);
@@ -19,11 +21,29 @@ try {
 
 <Layout title="Manage Access">
 	<h2 class="text-2xl text-center">Users that can access Pictures of {child?.firstName}</h2>
-	<ul>
+	<table class="w-full mt-8 text-center">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Delete</th>
+			</tr>
+		</thead>
+		<tbody>
+			{eligables.map((eligable) => (
+			<tr>
+				<td class="">{eligable.recipient}</td>
+				<td>
+					<DeleteEligable client:idle recipient={eligable.recipient} hash={eligable.hash} />
+				</td>
+			</tr>
+			))}
+		</tbody>
+	</table>
+	<!-- <ul>
 		{eligables.map((eligable) => (
 		<li>
 			{eligable}
 		</li>
 		))}
-	</ul>
+	</ul> -->
 </Layout>

@@ -7,12 +7,15 @@ import { checkLogin, getChild, getChildren } from "../utils/db";
 const cookies = Astro.request.headers.get('cookie');
 
 const authorizable = await checkLogin(cookies);
-if (!authorizable.loggedIn) {
+const children = await getChildren(authorizable);
+console.log(!!children.length)
+if (!authorizable.loggedIn || !children.length) {
 	return Astro.redirect('/welcome');
 }
 
-const children = await getChildren(authorizable);
+
 const child = await getChild(children[0]);
+console.log(children)
 
 let images: Resources[] = [];
 if (children.length > 0) {
