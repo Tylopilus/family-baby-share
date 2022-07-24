@@ -6,16 +6,20 @@ import { getMedia, Resources } from "../utils/cloudinary";
 import { checkLogin, getChild, getChildren } from "../utils/db";
 const cookies = Astro.request.headers.get('cookie');
 
+console.time('checkLogin')
 const authorizable = await checkLogin(cookies);
+console.timeEnd('checkLogin');
+console.time('getChildren');
 const children = await getChildren(authorizable);
-console.log(!!children.length)
+console.timeEnd('getChildren');
+
 if (!authorizable.loggedIn || !children.length) {
 	return Astro.redirect('/welcome');
 }
 
-
+console.time('getChild');
 const child = await getChild(children[0]);
-console.log(children)
+console.timeEnd('getChild');
 
 let images: Resources[] = [];
 if (children.length > 0) {
