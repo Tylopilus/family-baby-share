@@ -85,7 +85,7 @@ const Share = () => {
             </Button>
             <Button
               variant="primary"
-              href="https://api.whatsapp.com/send?text=www.google.com"
+              href={`https://api.whatsapp.com/send?text=https://${inviteLink()}`}
               data-action="share/whatsapp/share"
               target="_blank"
               rel="noopener noreferrer">
