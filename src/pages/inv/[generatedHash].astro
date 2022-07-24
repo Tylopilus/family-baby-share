@@ -3,23 +3,28 @@ import * as db from "../../utils/db";
 import { generateHash } from '../../utils/utils';
 
 console.log(Astro.request.headers)
-// const param = Astro.params.generatedHash!.toString();
-// const inviteHash = await db.getInviteHash(param);
-// if (!inviteHash) {
-// 	return Astro.redirect('/');
-// }
-// const hash = generateHash();
-// try {
-// 	const dbHash = await db.createHash(hash, inviteHash.recipient || '');
-// 	await db.deleteInviteHash(inviteHash.hash);
-// 	Astro.response.headers.set('Set-Cookie', `familyShareAccess=${dbHash}; path=/; max-age=${60 * 60 * 24 * 365};`);
-// 	Astro.response.status = 303;
-// 	Astro.response.headers.set('Location', '/');
-// }
-// catch (e) {
-// 	console.error(e);
-// 	return Astro.redirect('/');
-// }
+const UA = Astro.request.headers.get('user-agent');
+if (UA?.indexOf('WhatsApp')! > -1) {
+	console.log('Detected WhatsApp UserAgent - skipping');
+	return Astro.redirect('/')
+}
+const param = Astro.params.generatedHash!.toString();
+const inviteHash = await db.getInviteHash(param);
+if (!inviteHash) {
+	return Astro.redirect('/');
+}
+const hash = generateHash();
+try {
+	const dbHash = await db.createHash(hash, inviteHash.recipient || '');
+	await db.deleteInviteHash(inviteHash.hash);
+	Astro.response.headers.set('Set-Cookie', `familyShareAccess=${dbHash}; path=/; max-age=${60 * 60 * 24 * 365};`);
+	Astro.response.status = 303;
+	Astro.response.headers.set('Location', '/');
+}
+catch (e) {
+	console.error(e);
+	return Astro.redirect('/');
+}
 
 ---
 
