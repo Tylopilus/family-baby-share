@@ -13,7 +13,7 @@ const loginState = await checkLogin(Astro.request.headers.get('cookie'));
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 
 <head>
 	<meta charset="UTF-8" />
@@ -24,7 +24,7 @@ const loginState = await checkLogin(Astro.request.headers.get('cookie'));
 	<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
 </head>
 
-<body class="container mx-auto">
+<body class="container flex flex-col h-full mx-auto">
 	<header class="my-10 mt-6">
 		<Header access={loginState.access} client:idle />
 	</header>

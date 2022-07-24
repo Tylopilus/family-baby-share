@@ -1,19 +1,33 @@
 ---
+import Button from "../../components/Shared/Button";
+import Layout from "../../layouts/Layout.astro";
 import { supabase } from "../../utils/supabase";
-
-const { user, session, error } = await supabase.auth.signIn({
-	email: 'example@email.com',
-	password: 'example-password'
-})
-if (session) {
-	Astro.response.headers.set('Set-Cookie', `access_token=${session.access_token};path=/;max-age=${session.expires_in}`);
-	// Astro.response.status = 301;
-	// Astro.response.headers.set('Location', '/');
+let formError: string | undefined = '';
+if (Astro.request.method === 'POST') {
+	const formData = await Astro.request.formData();
+	const { user, session, error } = await supabase.auth.signIn({
+		email: formData.get('email') as string || 'null',
+		password: formData.get('password') as string || ''
+	})
+	if (session) {
+		Astro.response.headers.set('Set-Cookie', `access_token=${session.access_token};path=/;max-age=${session.expires_in}`);
+		Astro.response.status = 303;
+		Astro.response.headers.set('Location', '/');
+	}
+	formError = error?.message;
 }
 ---
 
-<div></div>
-<script>
-	window.location.href = '/';
-
-</script>
+<Layout title="Login">
+	<div class="items-center w-full h-full max-w-lg mx-auto ">
+		<h1 class="mb-4 text-2xl">Login</h1>
+		<form method="POST" class="flex flex-col px-8 border rounded-lg shadow-sm">
+			<input type="email" name="email" id='email' placeholder="Email" required
+				class="w-full py-4 pl-4 mt-4 text-gray-700 bg-gray-100 border rounded-md placeholder-slate-500" />
+			<input type="password" name="password" placeholder="Password" required
+				class="w-full py-4 pl-4 mt-4 text-gray-700 bg-gray-100 border rounded-md placeholder-slate-500" />
+			<Button variant={"primary"} type='submit' class='px-8 mt-4 mb-4 rounded-lg w-fit'>Login</Button>
+			<div>{formError}</div>
+		</form>
+	</div>
+</Layout>
