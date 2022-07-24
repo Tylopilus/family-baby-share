@@ -1,10 +1,9 @@
 ---
-import ImageList from "../components/ImageList.astro";
+import ImageListWrapper from "../components/ImageListWrapper.astro";
 import Profile from "../components/Profile.astro";
 import Layout from "../layouts/Layout.astro";
-import { getImage, getMedia, Resources } from "../utils/cloudinary";
+import { getMedia, Resources } from "../utils/cloudinary";
 import { checkLogin, getChild, getChildren } from "../utils/db";
-import { groupBy } from "../utils/utils";
 const cookies = Astro.request.headers.get('cookie');
 
 const authorizable = await checkLogin(cookies);
@@ -30,6 +29,6 @@ if (children.length > 0) {
 <Layout title="Welcome to your favorite place to view your pictures">
 	<main data-child-name={child?.firstName}>
 		<Profile child={children[0]} />
-		<ImageList images={images} child={children[0]} />
+		<ImageListWrapper images={images} child={children[0]} />
 	</main>
 </Layout>

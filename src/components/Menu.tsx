@@ -16,9 +16,9 @@ const Menu = () => {
           <li>
             <a href="/manage">Manage Access</a>
           </li>
-          <li>
+          {/* <li>
             <a href="/add">Add child</a>
-          </li>
+          </li> */}
         </ul>
       </Modal>
     </Button>

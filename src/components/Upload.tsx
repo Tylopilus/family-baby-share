@@ -37,11 +37,6 @@ const Upload = () => {
     // console.log('submit');
   };
   return (
-    // <form method="post" enctype="multipart/form-data">
-    //   <label for="file">File</label>
-    //   <input type="file" name="file" multiple id="file" hidden />
-    //   <button type="submit">Submit</button>
-    // </form>
     <div
       class="absolute top-[50%] left-0 flex justify-center items-center flex-col w-full"
       style={{ transform: 'translateY(-50%)' }}>

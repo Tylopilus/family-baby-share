@@ -187,3 +187,21 @@ export async function getRecipient(
   });
   return res;
 }
+
+export async function getEligableUsers(
+  childID: ChildUUID | null | undefined
+): Promise<string[]> {
+  if (!childID) return [];
+  const result = await prisma.accessHashTable.findMany({
+    where: {
+      children: {
+        user_uid: childID,
+      },
+    },
+    include: {
+      children: true,
+    },
+  });
+  const users = result.map((item) => item.recipient || '');
+  return users;
+}

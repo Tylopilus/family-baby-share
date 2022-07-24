@@ -1,0 +1,29 @@
+---
+import { checkLogin, getChild, getChildren, getEligableUsers } from "../../utils/db";
+import Layout from "../../layouts/Layout.astro";
+
+const cookies = Astro.request.headers.get('cookie');
+const authorizable = await checkLogin(cookies);
+const children = await getChildren(authorizable);
+const child = await getChild(children[0]);
+const eligables = await getEligableUsers(child?.user_uid);
+
+try {
+	if (authorizable.access !== 'account') {
+		return Astro.redirect('/');
+	}
+} catch (e) {
+	return Astro.redirect('/');
+}
+---
+
+<Layout title="Manage Access">
+	<h2 class="text-2xl text-center">Users that can access Pictures of {child?.firstName}</h2>
+	<ul>
+		{eligables.map((eligable) => (
+		<li>
+			{eligable}
+		</li>
+		))}
+	</ul>
+</Layout>
