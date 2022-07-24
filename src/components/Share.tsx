@@ -1,6 +1,6 @@
 import { createSignal, Show } from 'solid-js';
 import Button from './Shared/Button';
-import { ShareIcon } from './Shared/Icons';
+import { ShareIcon, UploadIndicator } from './Shared/Icons';
 
 type FormEvent = Event & {
   submitter: HTMLElement;
@@ -35,7 +35,7 @@ const Share = () => {
   };
   return (
     <>
-      <Show when={!submitted()}>
+      <Show when={!inviteLink()}>
         <form
           class="flex flex-col items-center justify-center w-full"
           onSubmit={(e) => submitHandler(e)}>
@@ -49,12 +49,17 @@ const Share = () => {
             placeholder="John Doe"
             ref={inputRef}
           />
-          <Button variant="primary" class="mt-8">
+          <Button variant="primary" class="mt-8 flex items-center">
             Generate Link
+            <Show when={submitted()}>
+              <span class="w-7 h-7 ml-4">
+                <UploadIndicator color="#fff" />
+              </span>
+            </Show>
           </Button>
         </form>
       </Show>
-      <Show when={submitted() && inviteLink()}>
+      <Show when={inviteLink()}>
         <div class="max-w-sm">
           <span class="text-2xl">
             Link for <span class="block font-bold">{inputRef!.value}</span>
