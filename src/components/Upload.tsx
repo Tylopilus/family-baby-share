@@ -60,8 +60,10 @@ const Upload = () => {
         />
       </Show>
       {selectedItems() > 0 && (
-        <div class="mt-4">
-          <div>{selectedItems() > 1 ? 'Files' : 'File'} selected</div>
+        <div class="mt-4 flex flex-col items-center">
+          <Show when={!submitting()} fallback="Uploading images...">
+            <div>{selectedItems() > 1 ? 'Files' : 'File'} selected</div>
+          </Show>
           <Button variant="primary" class="mt-4" onClick={submitHandler}>
             Upload
           </Button>
