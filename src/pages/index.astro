@@ -1,12 +1,12 @@
 ---
-import ImageListWrapper from "../components/ImageListWrapper.astro";
-import Profile from "../components/Profile.astro";
-import Layout from "../layouts/Layout.astro";
-import { getMedia, Resources } from "../utils/cloudinary";
-import { checkLogin, getChild, getChildren } from "../utils/db";
+import ImageListWrapper from '../components/ImageListWrapper.astro';
+import Profile from '../components/Profile.astro';
+import Layout from '../layouts/Layout.astro';
+import { getMedia, Resources } from '../utils/cloudinary';
+import { checkLogin, getChild, getChildren } from '../utils/db';
 const cookies = Astro.request.headers.get('cookie');
 
-console.time('checkLogin')
+console.time('checkLogin');
 const authorizable = await checkLogin(cookies);
 console.timeEnd('checkLogin');
 console.time('getChildren');
@@ -14,17 +14,21 @@ const children = await getChildren(authorizable);
 console.timeEnd('getChildren');
 
 if (!authorizable.loggedIn || !children.length) {
-	return Astro.redirect('/welcome');
+  return Astro.redirect('/welcome');
 }
 
 console.time('getChild');
 const child = await getChild(children[0]);
 console.timeEnd('getChild');
 
+console.time('getMedia');
 let images: Resources[] = [];
 if (children.length > 0) {
-	images = await getMedia(`${import.meta.env.CLOUDINARY_FOLDER}/${children[0]}`);
+  images = await getMedia(
+    `${import.meta.env.CLOUDINARY_FOLDER}/${children[0]}`
+  );
 }
+console.timeEnd('getMedia');
 
 // const obj = [
 // 	{ date: '2022-02-14', name: 'john' },
@@ -34,8 +38,8 @@ if (children.length > 0) {
 ---
 
 <Layout title="Welcome to your favorite place to view your pictures">
-	<main data-child-name={child?.firstName}>
-		<Profile child={children[0]} />
-		<ImageListWrapper images={images} child={children[0]} />
-	</main>
+  <main data-child-name={child?.firstName}>
+    <Profile child={children[0]} />
+    <ImageListWrapper images={images} child={children[0]} />
+  </main>
 </Layout>
