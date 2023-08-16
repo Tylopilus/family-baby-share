@@ -1,16 +1,13 @@
 ---
-import { getImage } from "../utils/cloudinary";
-import type { Resources } from "../utils/cloudinary";
-import type { Children } from '@prisma/client';
-import { getChild } from "../utils/db";
-import ImageList from "./ImageList";
+import type { Resources } from '../utils/cloudinary';
+import ImageList from './ImageList';
 export type Props = {
-	images: Resources[];
-	child: string;
-}
+  images: Resources[];
+  child: string;
+  nextCursor: string | null;
+};
 
-const { images } = Astro.props as Props;
-const child = await getChild(Astro.props.child)
+const { images, nextCursor } = Astro.props as Props;
 ---
 
 {/*<span>Third Month (23.04.22 - 22.05.22)</span>*/}
@@ -19,4 +16,4 @@ const child = await getChild(Astro.props.child)
 	<ImageList images={images} client:idle />
 
 </div> -->
-<ImageList images={images} />
+<ImageList images={images} cursor={nextCursor} client:idle />
