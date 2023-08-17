@@ -23,10 +23,14 @@ console.timeEnd('getChild');
 
 console.time('getMedia');
 let images: Resources[] = [];
+let nextCursor = null;
 if (children.length > 0) {
-  images = await getMedia(
-    `${import.meta.env.CLOUDINARY_FOLDER}/${children[0]}`
+  const { resources, nextCursor: cursor } = await getMedia(
+    `${import.meta.env.CLOUDINARY_FOLDER}/${children[0]}`,
+    10
   );
+  images = resources;
+  nextCursor = cursor;
 }
 console.timeEnd('getMedia');
 
@@ -40,6 +44,10 @@ console.timeEnd('getMedia');
 <Layout title="Welcome to your favorite place to view your pictures">
   <main data-child-name={child?.firstName}>
     <Profile child={children[0]} />
-    <ImageListWrapper images={images} child={children[0]} />
+    <ImageListWrapper
+      images={images}
+      child={children[0]}
+      nextCursor={nextCursor}
+    />
   </main>
 </Layout>

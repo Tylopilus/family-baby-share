@@ -1,11 +1,11 @@
 ---
-import type { User } from "@supabase/supabase-js";
-import { checkLogin, getLoginToken, getUser } from "../utils/db";
-import Header from "../components/Header";
+import type { User } from '@supabase/supabase-js';
+import { checkLogin, getLoginToken, getUser } from '../utils/db';
+import Header from '../components/Header';
 import '../assets/global.css';
 
 export interface Props {
-	title: string;
+  title: string;
 }
 
 const { title } = Astro.props as Props;
@@ -14,23 +14,23 @@ const loginState = await checkLogin(Astro.request.headers.get('cookie'));
 
 <!DOCTYPE html>
 <html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width" />
-	<link rel="icon" type="image/x-icon" href="/favicon.ico" />
-	<title>{title}</title>
-	<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
-</head>
-
-<body class="container flex flex-col h-full mx-auto">
-	<header class="my-10 mt-6">
-		<Header access={loginState.access} client:idle />
-	</header>
-	<slot />
-</body>
-
+  <body class="container flex flex-col mx-auto">
+    <header class="my-10 mt-6">
+      <Header access={loginState.access} client:idle />
+    </header>
+    <slot />
+  </body>
 </html>
-<style>
-</style>
+<style></style>
