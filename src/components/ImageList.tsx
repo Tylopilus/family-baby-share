@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from 'solid-js';
+import { For, createEffect, createSignal } from 'solid-js';
 import { Resources } from '../utils/cloudinary';
 
 type Props = {
@@ -12,7 +12,7 @@ const ImageList = (props: Props) => {
   let fetching = false;
   const handleScroll = async () => {
     if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight &&
+      window.innerHeight + window.scrollY >= document.body.offsetHeight * 0.8 &&
       !fetching
     ) {
       fetching = true;
@@ -34,22 +34,12 @@ const ImageList = (props: Props) => {
   };
   return (
     <div ref={imageList}>
-      {images().map((image, idx) =>
-        props.images.length - 1 === idx ? (
-          <Image image={image} last={true} />
-        ) : (
-          <Image image={image} last={false} />
-        )
-      )}
+      <For each={images()}>{(image) => <Image image={image} />}</For>
     </div>
   );
 };
 export default ImageList;
-const Image = (props: {
-  image: Resources;
-  last: boolean;
-  ref?: HTMLImageElement | any;
-}) => {
+const Image = (props: { image: Resources; ref?: HTMLImageElement | any }) => {
   const modifiers = 'w_1000,h_1000,c_limit';
   const splitUrl = props.image.secure_url.split('/image/upload/');
   const modifierUrl =
@@ -61,7 +51,6 @@ const Image = (props: {
       ref={props.ref}
       src={url}
       alt={props.image.public_id}
-      // loading="lazy"
       width={props.image.width}
       height={props.image.height}
     />
