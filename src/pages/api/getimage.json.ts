@@ -16,7 +16,12 @@ async function fetchImages(
     cursor,
   };
 }
-export async function get({ request }: { request: Request }) {
+export async function get({
+  request,
+}: {
+  request: Request;
+}): Promise<{ status: number; body?: string }> {
+  console.time('checkLogin');
   const authorizable = await checkLogin(request.headers.get('cookie'));
   console.timeEnd('checkLogin');
   console.time('getChildren');
