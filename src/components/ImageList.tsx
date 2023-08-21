@@ -1,4 +1,4 @@
-import { For, createEffect, createSignal } from 'solid-js';
+import { For, createSignal, onCleanup, onMount } from 'solid-js';
 import { Resources } from '../utils/cloudinary';
 
 type Props = {
@@ -6,10 +6,11 @@ type Props = {
   cursor: string | null;
 };
 let imageList: HTMLDivElement;
-const ImageList = (props: Props) => {
-  const [images, setImaages] = createSignal<Resources[]>(props.images);
+export default function ImageList(props: Props) {
+  const [images, setImages] = createSignal<Resources[]>(props.images);
   const [cursor, setCursor] = createSignal<string | null>(props.cursor);
   let fetching = false;
+
   const handleScroll = async () => {
     if (
       window.innerHeight + window.scrollY >= document.body.offsetHeight * 0.8 &&
@@ -21,24 +22,30 @@ const ImageList = (props: Props) => {
     }
   };
 
-  createEffect(() => {
+  onMount(() => {
     window.addEventListener('scroll', handleScroll);
   });
+
+  onCleanup(() => {
+    window.removeEventListener('scroll', handleScroll);
+  });
+
   const fetchNextData = async () => {
     if (!cursor()) return;
     const res = await (
       await fetch('/api/getimage.json?cursor=' + cursor())
     ).json();
-    setImaages([...images(), ...res.images]);
+    setImages([...images(), ...res.images]);
     setCursor(res.cursor);
   };
+
   return (
     <div ref={imageList}>
       <For each={images()}>{(image) => <Image image={image} />}</For>
     </div>
   );
-};
-export default ImageList;
+}
+
 const Image = (props: { image: Resources; ref?: HTMLImageElement | any }) => {
   const modifiers = 'w_1000,h_1000,c_limit';
   const splitUrl = props.image.secure_url.split('/image/upload/');
